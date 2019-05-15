@@ -1,0 +1,61 @@
+node server.js
+docker build -t helloworld/envoy -f ./envoy.Dockerfile .
+docker run -d -p 8080:8080 helloworld/envoy
+python -m http.server 8081
+
+c#:
+protoc.exe pricecomparison.proto --csharp_out=back --grpc_out=back --plugin=protoc-gen-grpc=grpc_csharp_plugin.exe
+
+js:
+protoc.exe pricecomparison.proto --js_out=import_style=commonjs,binary:front --grpc-web_out=import_style=commonjs,mode=grpcwebtext:front
+
+protoc.exe --plugin="protoc-gen-ts=C:\Users\Neo\Desktop\study\grpc\grpc-react\grpc-web-react-example\proto\examplecom\library\node_modules\.bin\protoc-gen-ts.cmd" --js_out="import_style=commonjs,binary:front" --ts_out="service=true:front" pricecomparison.proto
+
+proxy:
+grpcwebproxy.exe --backend_addr=localhost:9091 --run_tls_server=false --use_websockets --allow_all_origins --backend_max_call_recv_msg_size=104857600
+
+ef database first
+Scaffold-DbContext "Host=192.168.100.8;Database=pricecomp;Username=neo;Password=Msy1234!" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models
+
+packages:
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.Tools
+npgsql
+Npgsql.EntityFrameworkCore.PostgreSQL
+Linq
+
+DOCKER
+
+docker build -t neo/pricecomparison:latest .
+docker run neo/pricecomparison
+
+docker tag neo/pricecomarison:0.1 registry.msy.com.au:5000/neo_pricecomparison:0.1
+
+docker push registry.msy.com.au:5000/neo_pricecomparison:0.1
+
+nexus:http://192.168.100.119
+
+docker swarm join \
+    --token SWMTKN-1-26gnyby3ayfalxwhiptvfuei7urwe90wivq4x9wqnjkbjt8v6n-6he7hsrs11qwpunzbpjoyzd2c \
+    10.0.0.241:2377
+
+registry.msy.com.au:5000/
+
+access:ssh neo@10.0.0.247
+psword: neo
+
+docker node ls
+docker image ls
+docker service ls
+docker service logs
+docker service rm
+docker logs
+
+docker service create registry.msy.com.au:5000/
+
+registry: username: admin  psword:admin123
+
+windows container:
+docker run -p 8085:8080 appclient:2.1 
+docker exec -it d8c25fde2769 cmd
+scp
