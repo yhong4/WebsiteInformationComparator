@@ -1,0 +1,11 @@
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\bin\Debug\netcoreapp2.2\server.deps.json
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\bin\Debug\netcoreapp2.2\server.runtimeconfig.json
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\bin\Debug\netcoreapp2.2\server.runtimeconfig.dev.json
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\bin\Debug\netcoreapp2.2\server.dll
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\obj\Debug\netcoreapp2.2\server.csproj.CoreCompileInputs.cache
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\obj\Debug\netcoreapp2.2\server.AssemblyInfoInputs.cache
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\obj\Debug\netcoreapp2.2\server.AssemblyInfo.cs
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\obj\Debug\netcoreapp2.2\server.csprojAssemblyReference.cache
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\bin\Debug\netcoreapp2.2\server.pdb
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\obj\Debug\netcoreapp2.2\server.dll
+C:\Users\Neo\Desktop\msy\competitor-price\competitor-price-server\server\server\server\obj\Debug\netcoreapp2.2\server.pdb
