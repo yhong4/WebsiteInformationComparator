@@ -8,10 +8,8 @@ const stateType = {
     SET_PRODUCTCOMPARISON:"SET_PRODUCTCOMPARISON",
     SET_STATE_CATEGORIES:"SET_STATE_CATEGORIES",
     SET_MARGIN_CATEGORIES:"SET_MARGIN_CATEGORIES",
+    SET_TABLE_DATA_LOADING:"SET_TABLE_DATA_LOADING",
+    SET_HEIHGT:"SET_HEIGHT",
 }
 
 export default stateType;
-// export interface systemState {
-//     ERROR:boolean;
-//     ERROR_MESSAGE:string;
-// }

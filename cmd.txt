@@ -1,4 +1,4 @@
-node server.js
+﻿node server.js
 docker build -t helloworld/envoy -f ./envoy.Dockerfile .
 docker run -d -p 8080:8080 helloworld/envoy
 python -m http.server 8081
@@ -12,7 +12,7 @@ protoc.exe pricecomparison.proto --js_out=import_style=commonjs,binary:front --g
 protoc.exe --plugin="protoc-gen-ts=C:\Users\Neo\Desktop\study\grpc\grpc-react\grpc-web-react-example\proto\examplecom\library\node_modules\.bin\protoc-gen-ts.cmd" --js_out="import_style=commonjs,binary:front" --ts_out="service=true:front" pricecomparison.proto
 
 proxy:
-grpcwebproxy.exe --backend_addr=localhost:9091 --run_tls_server=false --use_websockets --allow_all_origins --backend_max_call_recv_msg_size=104857600
+grpcwebproxy.exe --backend_addr=0.0.0.0:9091 --run_tls_server=false --use_websockets --allow_all_origins --backend_max_call_recv_msg_size=104857600
 
 ef database first
 Scaffold-DbContext "Host=192.168.100.8;Database=pricecomp;Username=neo;Password=Msy1234!" Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models
@@ -44,6 +44,8 @@ registry.msy.com.au:5000/
 access:ssh neo@10.0.0.247
 psword: neo
 
+swarm ：
+docker stack deploy --compose-file docker-compose.yml stackdemo
 docker node ls
 docker image ls
 docker service ls
@@ -58,4 +60,8 @@ registry: username: admin  psword:admin123
 windows container:
 docker run -p 8085:8080 appclient:2.1 
 docker exec -it d8c25fde2769 cmd
-scp
+scp file.txt remote_username@10.10.0.2:/remote/directory
+ docker service scale backend=10
+docker rm $(docker ps -a -q)
+linux:
+enter admin mode : sudo -i

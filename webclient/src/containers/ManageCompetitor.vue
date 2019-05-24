@@ -202,7 +202,7 @@ export default class ManageCompetitor extends Vue{
             onEnd: res => {
                 const {status, message } = res;
                 if(status === grpc.Code.OK && message){
-                    console.log(message.toObject())
+                    console.log("update tier")
                 }
                 this.getCompetitors();
             }
@@ -244,7 +244,6 @@ export default class ManageCompetitor extends Vue{
 
     AddCompetitorService(){
         let request = this.addNewCompetitorRequest();
-        console.log("request add",request)
         try{
             grpc.unary(PriceComparisonService.AddCompetitor,{
             request:request,
@@ -252,7 +251,7 @@ export default class ManageCompetitor extends Vue{
             onEnd: res => {
                 const { message, status } = res;
                 if( status === grpc.Code.OK && message){
-                    console.log(message.toObject())
+                    console.log("add competitor")
                 }
                 this.getCompetitors();
             }
@@ -289,7 +288,7 @@ export default class ManageCompetitor extends Vue{
                 onEnd: res=>{
                     const {message, status} = res;
                     if(status === grpc.Code.OK && message){
-                        console.log(message.toObject())
+                        console.log("delete competitor")
                     }else{
                         console.log("fail to delete data")
                     }
@@ -316,7 +315,7 @@ export default class ManageCompetitor extends Vue{
 }
 </script>
 
-<style lang="scss">
+<style>
 .icon-container{
     display: flex;
     justify-content: flex-end;

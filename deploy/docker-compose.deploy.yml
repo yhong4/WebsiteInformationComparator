@@ -1,0 +1,42 @@
+version: "3"
+services:
+  proxy:
+    image: registry.msy.com.au:5000/pricecomparisonproxy
+    ports:
+      - "8000:8000"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "1"
+        reservations:
+          cpus: "1"
+  server:
+    image: registry.msy.com.au:5000/pricecomparisonserver
+    ports:
+      - "9091:9091"
+    environment:
+      - DATABASE_HOST=192.168.100.8
+      - DATABASE_NAME=pricecomp
+      - DATABASE_USERNAME=neo
+      - DATABASE_PASSWORD=Msy1234!
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "2"
+        reservations:
+          cpus: "2"
+  client:
+    image: registry.msy.com.au:5000/pricecomparisonclient
+    ports:
+      - "8080:8080"
+    environment:
+      - VUE_APP_API_URL="http://10.0.0.247:8000"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "1.5"
+        reservations:
+          cpus: "1.5"

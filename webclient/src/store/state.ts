@@ -25,15 +25,15 @@ export let GlobalState:any = {
     statemondayList:[],
     statethuesdayList:[],
     statewednesdayList:[],
-    stateunassginedList:[],
-
-
-
+    stateunassginedList: [],
 
     productComparisonData:[],
-    isTableDataLoading: false,
+    isTableDataLoading: true,
+    isFailLoadTable: false,
 
-    host:"http://localhost:8080"
+    height:800,
+
+    host:"http://10.0.0.247:8000",
 }
 
 

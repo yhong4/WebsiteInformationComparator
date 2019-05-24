@@ -79,7 +79,7 @@ export default class ManageCompetitor extends Vue{
     @State stateCategories!: StoreState.categories[];
     @State host!:string;
     @Action getCategories!:()=>void;
-    @Action getStateCategories!:()=>void;
+    @Action getNewCategories!:()=>void;
 
     private categoriesModelList!:any;
 
@@ -115,8 +115,7 @@ export default class ManageCompetitor extends Vue{
                 const { message, status } = res;
                 if(status === grpc.Code.OK){
                     console.log("updated categories");
-                    // this.getCategories();
-                    this.getStateCategories();
+                    this.getNewCategories();
                 }else{
                     console.log("fail to update")
                 }
@@ -136,7 +135,6 @@ export default class ManageCompetitor extends Vue{
         this.updatedCategoryItems("Wednesday, Saturday","3.Wednesday,Saturday")
         this.updatedCategoryItems("Unassigned","4.Unassigned")
         
-        console.log("this.updatedCategories",this.updatedCategories)
         request.setUpdatedcategoriesList(this.updatedCategories)
         return request;
     }
@@ -169,14 +167,10 @@ export default class ManageCompetitor extends Vue{
 }
 </script>
 
-<style lang="scss">
+<style >
 .icon-container{
     display: flex;
     justify-content: flex-end;
     padding:0 24px;
 }
-
-
-
-
 </style>

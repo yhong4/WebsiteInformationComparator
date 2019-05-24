@@ -69,30 +69,12 @@
       <v-toolbar-title>Competitor Price Watcher</v-toolbar-title>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height ref="screen">
+      <v-container fluid fill-height>
         <v-layout
           justify-center
           align-center
         >
-        <router-view ></router-view>
-          <!-- <v-flex text-xs-center>
-            <v-tooltip left>
-              <template v-slot:activator="{ on }">
-                <v-btn :href="source" icon large target="_blank" v-on="on">
-                  <v-icon large>code</v-icon>
-                </v-btn>
-              </template>
-              <span>Source</span>
-            </v-tooltip>
-            <v-tooltip right>
-              <template v-slot:activator="{ on }">
-                <v-btn icon large href="https://codepen.io/johnjleider/pen/rJdVMq" target="_blank" v-on="on">
-                  <v-icon large>mdi-codepen</v-icon>
-                </v-btn>
-              </template>
-              <span>Codepen</span>
-            </v-tooltip>
-          </v-flex> -->
+        <router-view></router-view>
         </v-layout>
       </v-container>
     </v-content>
@@ -104,40 +86,20 @@
   import Vue from 'vue';
   import NavBar from "@/components/Layout/NavBar.vue";
   import SiteHeader from "@/components/Layout/Header.vue";
-  import { Component, Prop, Watch } from 'vue-property-decorator';
+  import { Component, Prop, Watch} from 'vue-property-decorator';
+  import { State } from 'vuex-class';
 
   import colors from 'vuetify/es5/util/colors';
 
   @Component
   export default class Layout extends Vue{
-
+    @State height!:number;
     @Prop(String) readonly source!:string;
     drawer:boolean = true;
 
     $refs!: {
           screen:HTMLFormElement
         }
-
-    private width!:number;
-    private height!:number;
-
-    mounted(){
-      this.width = this.$refs.screen.clientWidth;
-      this.height = this.$refs.screen.clientHeight;
-      console.log(this.width,this.height);
-    }
-
-    @Watch(`this.$refs.tableBox.clientWidth`)
-    onChangeWidth(){
-      
-      this.width = this.$refs.screen.clientWidth
-      console.log("width",this.width)
-    }
-    @Watch(`this.$refs.tableBox.clientHeight`)
-    onChangeHeight(){
-      this.height = this.$refs.screen.clientHeight
-      console.log("width",this.height)
-    }
 
     goToHome():void{
       this.$router.push("/");
@@ -167,12 +129,12 @@
     }
   }
 </script>
-<style lang="scss" scoped>
+<style scoped>
   .list-item{
     margin-top:10px;
+  }
 
-    .sub-list-item{
+  .sub-list-item{
       padding-left:56px;
     }
-  }
 </style>

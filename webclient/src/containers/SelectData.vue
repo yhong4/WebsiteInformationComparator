@@ -96,7 +96,7 @@ export default class SelectData extends Vue{
 
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 
   .submit-block {
     margin-top: 60px;

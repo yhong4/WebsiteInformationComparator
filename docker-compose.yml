@@ -1,0 +1,56 @@
+version: "3"
+services:
+  proxy:
+    image: registry.msy.com.au:5000/pricecomparisonproxy
+    build: ${PROXY_BUILD_PATH}
+    ports:
+      - "8000:8000"
+    links:
+      - "${PROXY_LINK}"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "1"
+        reservations:
+          cpus: "1"
+  server:
+    image: registry.msy.com.au:5000/pricecomparisonserver
+    build: ${SERVER_BUILD_PATH}
+    ports:
+      - "9091:9091"
+    environment:
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_POOLING=${DATABASE_POOLING}
+      - DATABASE_MINPOOLSIZE=${DATABASE_MINPOOLSIZE}
+      - DATABASE_MAXPOOLSIZE=${DATABASE_MAXPOOLSIZE}
+      - DATABASE_KEEPALIVE=${DATABASE_KEEPALIVE}
+      - DATABASE_COMMANDTIMEOUT=${DATABASE_COMMANDTIMEOUT}
+      - SERVER_HOST=${SERVER_HOST}
+    container_name: "${SERVER_CONTAINER_NAME}"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "2"
+        reservations:
+          cpus: "2"
+  client:
+    image: registry.msy.com.au:5000/pricecomparisonclient
+    build: ${CLIENT_BUILD_PATH}
+    ports:
+      - "8080:8080"
+    environment:
+      - VUE_APP_API_URL=${CLIENT_API_URL}
+    links:
+      - "${CLIENT_LINK}"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "1.5"
+        reservations:
+          cpus: "1.5"

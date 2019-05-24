@@ -42,7 +42,6 @@ export default class SelectCategories extends Vue{
     private categoryList:string[] = [];
 
     get categoriesList(){
-      console.log("111",this.newCategories)
       return this.newCategories;
     }
 
@@ -75,7 +74,7 @@ export default class SelectCategories extends Vue{
 
 }
 </script>
-<style lang="scss">
+<style>
 .theme--light.v-label{
   color:#000000 !important;
   font-size:14px;

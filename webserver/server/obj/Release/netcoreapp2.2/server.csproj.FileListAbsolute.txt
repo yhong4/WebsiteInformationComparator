@@ -20,3 +20,14 @@ C:\Users\Neo\Desktop\msy\competitor-price\competitorprice\server\server\obj\Rele
 C:\Users\Neo\Desktop\msy\competitor-price\competitorprice\server\server\obj\Release\netcoreapp2.2\server.AssemblyInfo.cs
 C:\Users\Neo\Desktop\msy\competitor-price\competitorprice\server\server\obj\Release\netcoreapp2.2\server.dll
 C:\Users\Neo\Desktop\msy\competitor-price\competitorprice\server\server\obj\Release\netcoreapp2.2\server.pdb
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\bin\Release\netcoreapp2.2\server.deps.json
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\bin\Release\netcoreapp2.2\server.runtimeconfig.json
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\bin\Release\netcoreapp2.2\server.runtimeconfig.dev.json
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\bin\Release\netcoreapp2.2\server.dll
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\bin\Release\netcoreapp2.2\server.pdb
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\obj\Release\netcoreapp2.2\server.csprojAssemblyReference.cache
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\obj\Release\netcoreapp2.2\server.csproj.CoreCompileInputs.cache
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\obj\Release\netcoreapp2.2\server.AssemblyInfoInputs.cache
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\obj\Release\netcoreapp2.2\server.AssemblyInfo.cs
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\obj\Release\netcoreapp2.2\server.dll
+C:\Users\Neo\Desktop\msy\competitor-price\deploy\webserver\server\obj\Release\netcoreapp2.2\server.pdb

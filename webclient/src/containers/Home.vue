@@ -18,7 +18,3 @@ import { State, Action } from 'vuex-class';
 export default class Home extends Vue{
 }
 </script>
-
-<style>
-
-</style>

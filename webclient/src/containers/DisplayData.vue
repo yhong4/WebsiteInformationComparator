@@ -3,6 +3,9 @@
     <div v-if="!isLoading">
       <atom-spinner :animation-duration="1000" :size="100" :color="'#ff1d5e'" class="spinner-position"></atom-spinner>
     </div>
+    <div v-if="isLoading && isFailLoad">
+      Some errors happened, Please try again
+    </div>
     <div v-if="isLoading">
         <v-card>
           <v-card-title>
@@ -14,6 +17,7 @@
               single-line
               hide-details
               style="padding:0px;margin:0px"
+              @keyup.enter="searchTable"
             ></v-text-field>
             <v-btn @click="searchTable" small class="search-btn">
               <v-icon>search</v-icon>
@@ -30,7 +34,7 @@
           :items="rows"
           :search="search"
           :pagination.sync="pagination"
-          :rows-per-page-items="[100,200,300]"
+          :rows-per-page-items="[50,100]"
           class="override-overflow"
         >
         <template v-slot:items="props">
@@ -74,7 +78,7 @@
             AU${{props.item.salesprice}}</td>
           <td style="border:1px solid rgba(0, 0, 0, 0.1);line-height:1.2;font-size:12px;width:20px;" v-for="(item, index) in props.item.competitorpricesList" :key="index" class="text-xs-center" 
               :class="[isCompetitorPriceLow(item,props.item.salesprice) ? 'warn-table':'',isOddRow(props.index)?'normal-even-table':'normal-table']">
-            {{item}}
+            {{checkPriceEmpty(item)}}
           </td>
         </template>
 
@@ -102,13 +106,15 @@ export default class DisplayData extends Vue {
 
         @State productComparisonData!:any;
         @State isTableDataLoading!:boolean;
+        @State isFailLoadTable!:boolean;
+        @State host!:string;
         
    
         private search:string = '';
         private searchText:string ='';
 
         private pagination:any = {};
-        private rowsPerPage:number = 100;
+        private rowsPerPage:number = 50;
         private snack:boolean = false;
         private snackColor:string = '';
         private snackText:string = '';
@@ -117,23 +123,19 @@ export default class DisplayData extends Vue {
         private updatedKeywords:string ='';
 
         private isLoading:boolean = true;
+        private isFailLoad:boolean = false;
 
-        private height:number = 780;
-        private width:number = 2000;
+        private height:number = 800;
 
         $refs!: {
           tableBox:HTMLFormElement
         }
 
-        @Watch('searchText')
-        onChangeSearch(){
-          console.log(this.searchText);
-        }
+
 
         @Watch("productComparisonData")
         onChangeProductComparisonData(){
             this.rows = [...this.productComparisonData]
-            console.log("row",this.rows)
         }
 
         @Watch("isTableDataLoading")
@@ -145,7 +147,23 @@ export default class DisplayData extends Vue {
           }
         }
 
+        @Watch("isFailLoad")
+        onChangeIsFailLoad(){
+          if(this.isFailLoadTable){
+            this.isFailLoad = true
+          }else{
+            this.isFailLoad = false
+          }
+        }
+
         mounted(){
+          // this.height = document.documentElement.clientHeight;
+          this.$nextTick(() => {
+            window.addEventListener('resize', () => {
+              this.height = window.innerHeight - 90
+            });
+          })
+
           this.rows = [...this.productComparisonData]
           if(this.isTableDataLoading){
             this.isLoading = true
@@ -212,7 +230,7 @@ export default class DisplayData extends Vue {
         let priceList = competitorpriceList.map( item=>{
             return parseFloat(item.match(reg)![0].substring(3))
         })
-        if( salesprice < Math.min(...priceList)){
+        if( (salesprice < Math.min(...priceList)) && Math.min(...priceList) !== -1){
           return true
         }else{
           return false
@@ -222,7 +240,7 @@ export default class DisplayData extends Vue {
       isCompetitorPriceLow(competitorprice:string, salesprice:number):boolean{
         let reg = /AU\$-?\d+(.\d+)?/g;
         let price:number  = parseFloat(competitorprice.match(reg)![0].substring(3))
-        if(salesprice > price){
+        if((salesprice > price) && price !== -1){
           return true
         }else{
           return false
@@ -237,6 +255,16 @@ export default class DisplayData extends Vue {
           return false
         }
         return false
+      }
+
+      checkPriceEmpty(competitorprice:string):string{
+        let reg = /AU\$-?\d+(.\d+)?/g;
+        let price:number  = parseFloat(competitorprice.match(reg)![0].substring(3))
+        if(price === -1){
+          return "No data"
+        }else{
+          return competitorprice;
+        }
       }
 
 
@@ -272,11 +300,11 @@ export default class DisplayData extends Vue {
         try {
           grpc.unary(PriceComparisonService.UpdateProductDescription,{
           request:request,
-          host:"http://localhost:8080",
+          host:this.host,
           onEnd: res=>{
             const {status,message} = res;
             if(status === grpc.Code.OK && message){
-               console.log("updated message",message.toObject())
+               console.log("updated message")
             }
           }
         })
@@ -292,7 +320,7 @@ export default class DisplayData extends Vue {
       };
 }
 </script>
-<style lang="scss">
+<style>
 .lowprice-table {
   background-color:red !important;
   color:#FFFFFF !important;
@@ -333,12 +361,12 @@ export default class DisplayData extends Vue {
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
+}
 
-  &:hover{
+.table-cell:hover{
     text-overflow: initial;
     white-space: normal;
   }
-}
 
 .keyword-cell{
   table-layout:fixed;

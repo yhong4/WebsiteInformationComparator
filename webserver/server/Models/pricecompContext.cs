@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Npgsql;
 
 namespace server.Models
 {
@@ -33,8 +34,19 @@ namespace server.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseNpgsql("Host=192.168.100.8;Database=pricecomp;Username=neo;Password=Msy1234!");
+                var builder = new NpgsqlConnectionStringBuilder();
+                builder.Host = Environment.GetEnvironmentVariable("DATABASE_HOST");
+                builder.Database = Environment.GetEnvironmentVariable("DATABASE_NAME");
+                builder.Username = Environment.GetEnvironmentVariable("DATABASE_USERNAME");
+                builder.Password = Environment.GetEnvironmentVariable("DATABASE_PASSWORD");
+                builder.Pooling = true;
+                builder.MinPoolSize = 10;
+                builder.MaxPoolSize = 20;
+                builder.KeepAlive = 3;
+                builder.CommandTimeout = 15;
+                //optionsBuilder.UseNpgsql("Host=192.168.100.8;Database=pricecomp;Username=neo;Password=Msy1234!;Pooling=true;MinPoolSize=10;MaxPoolSize=20;Keepalive=5;CommandTimeout=60");                //optionsBuilder.UseNpgsql("Host=192.168.100.8;Database=pricecomp;Username=neo;Password=Msy1234!;Pooling=true;MinPoolSize=10;MaxPoolSize=20;Keepalive=5;CommandTimeout=60");
+                optionsBuilder.UseNpgsql(builder.ConnectionString);
+                Console.WriteLine(Environment.GetEnvironmentVariable("DATABASE_HOST")+ Environment.GetEnvironmentVariable("DATABASE_NAME"));
             }
         }
 

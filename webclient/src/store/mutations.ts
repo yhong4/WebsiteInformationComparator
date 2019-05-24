@@ -7,7 +7,6 @@ const mutations:MutationTree<any> = {
     [stateType.SET_NEW_CATEGORIES](state:any, data:any):void{
         state.newCategories = [];
         state.newCategories = Object.assign([], data.categoryList);
-        console.log("new",state.newCategories);
     },
 
     [stateType.SET_CATEGORIES](state:any, data:any):void {
@@ -64,7 +63,6 @@ const mutations:MutationTree<any> = {
 
     [stateType.SET_STATE_CATEGORIES](state:any, data:any):void {
         
-        console.log("state.stateCategories",state.stateCategories)
         state.stateCategories = [];
         state.statedailyList = [];
         state.statemondayList = [];
@@ -189,7 +187,14 @@ const mutations:MutationTree<any> = {
             }
             state.productComparisonData.push(row)
         });
+    },
+    [stateType.SET_TABLE_DATA_LOADING](state:any,data:boolean){
+        Object.assign({},state.isTableDataLoading,data);
+    },
+    [stateType.SET_HEIHGT](state:any,data:number){
+        Object.assign({},state.height,data);
     }
+
 }
 
 export default mutations;

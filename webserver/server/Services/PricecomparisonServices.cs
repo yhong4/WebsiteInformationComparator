@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Grpc.Core;
@@ -16,6 +17,8 @@ using server.Models;
 using Competitor = Msyrpc.Competitor;
 using Product = Msyrpc.Product;
 
+using System.Diagnostics;
+
 namespace server.Services
 {
     class PricecomparisonServices : PriceComparisonService.PriceComparisonServiceBase
@@ -23,6 +26,9 @@ namespace server.Services
         public override Task<AllCompetitorTypesResponse> GetAllCompetitors(GetAllCompetitorTypesRequest request,
             ServerCallContext context)
         {
+
+            AllCompetitorTypesResponse response;
+
             using (var priceContext = new pricecompContext())
             {
                 var competitors = priceContext.Competitor1.ToList();
@@ -54,20 +60,21 @@ namespace server.Services
                     }
                 }
 
-                AllCompetitorTypesResponse response = new AllCompetitorTypesResponse
+                response = new AllCompetitorTypesResponse
                 {
                     CompetitorsTierOne = {competitorsTierOne},
                     CompetitorsTierTwo = {competitorsTierTwo}
                 };
-                Console.WriteLine(response);
-                return Task.FromResult(response);
+                priceContext.Dispose();
             }
 
+            return Task.FromResult(response);
         }
 
         public override Task<AllCategoryTypesResponse> GetAllProductCategories(GetAllCategoryTypesRequest request,
             ServerCallContext context)
         {
+            AllCategoryTypesResponse response;
             using (var priceContext = new pricecompContext())
             {
 //                var categories = priceContext.Stateassignment.ToList();
@@ -127,7 +134,7 @@ namespace server.Services
                     }
                 }
 
-                AllCategoryTypesResponse response = new AllCategoryTypesResponse()
+                response = new AllCategoryTypesResponse()
                 {
                     CategoryDaily = {categoryDaily},
                     CategoryMondayAndThursday = {categoryMondayAndThursday},
@@ -135,19 +142,16 @@ namespace server.Services
                     CategoryWednesdayAndSaturday = {categoryWednesdayAndSaturday},
                     CategoryUnassigned = {categoryUnassigned}
                 };
-
-                Console.WriteLine(response);
-
-                return Task.FromResult(response);
             }
+            return Task.FromResult(response);
         }
 
         public override Task<AllNewCategoryTypesResponse> GetAllNewCategoryTypes(GetAllNewCategoryTypesRequest request,
             ServerCallContext context)
         {
+            AllNewCategoryTypesResponse response;
             using (var priceContext = new pricecompContext())
             {
-                AllNewCategoryTypesResponse response;
 
                 RepeatedField<CategoryData> categoryData = new RepeatedField<CategoryData>();
 
@@ -187,237 +191,293 @@ namespace server.Services
                 {
                     Category = { categoryData }
                 };
-
-//                Console.WriteLine(response);
-                return Task.FromResult(response);
             }
+            return Task.FromResult(response);
+
         }
 
-                public override Task<ProductComparisonResponse> GetLoadProductComparisonInfomation(
-                    GetProductComparisonRequest request, ServerCallContext context)
-                {
-                    using (var pricecompContext = new pricecompContext())
-                    {
-        
-                        var categoryType = request.CategoryTypes;
-                        var competitorsType = request.CompetitorsTypes;
-        
-        
-                        var products =
-                            pricecompContext.Stateassignment
-                                .Join(
-                                    pricecompContext.Product,
-                                    category => category.Category,
-                                    product => product.Category,
-                                    (category, product) => new
-                                    {
-                                        id = category.Id,
-                                        productid = product.Productid,
-                                        productcode = product.Productcode,
-                                        productname = product.Productname,
-                                        salesprice = product.Salesprice,
-                                        costprice = product.Costprice,
-                                        keywords = product.Keywords
-                                    }
-                                )
-                                .Where(item => categoryType.Contains(item.id)).ToList();
-//        //
-//        foreach (var item in products)
-//        {
-//            Console.WriteLine(item+"\n");
-//        }
-        
-                        var competitorprice =
-                            pricecompContext.Competitorprice
-                                .Where(item => competitorsType.Contains(item.Competitorid))
-                                .Join(
-                                    pricecompContext.Competitor1,
-                                    price => price.Competitorid,
-                                    competitor => competitor.Competitorid,
-                                    (price, competitor) => new
-                                    {
-                                        id = price.Productid,
-                                        productid = price.Productid,
-                                        competitorid = price.Competitorid,
-                                        competitorprice = price.Competitorprice1,
-                                        competitorname = competitor.Name
-                                    }
-                                ).ToList();
-//                        foreach (var item in competitorprice)
-//                        {
-//                            Console.WriteLine(item + "\n");
-//                        }
-//                        Console.WriteLine("end competitor price");
+        //public override Task<ProductComparisonResponse> GetLoadProductComparisonInfomation(
+        //    GetProductComparisonRequest request, ServerCallContext context)
+        //{
+        //    using (var pricecompContext = new pricecompContext())
+        //    {
+        //        Stopwatch stopwatch = new Stopwatch();
+        //        stopwatch.Start();
+        //        var categoryType = request.CategoryTypes;
+        //        var competitorsType = request.CompetitorsTypes;
 
 
-                        var datatable = from productItem in products
-                                        join competitorItem in competitorprice
-                                on productItem.productid equals competitorItem.productid into productCompetitor
-                            from data in productCompetitor.DefaultIfEmpty()
-                            select new
-                            {
-                                productItem.productid,
-                                productItem.productcode,
-                                productItem.productname,
-                                productItem.salesprice,
-                                productItem.costprice,
-                                productItem.keywords,
-                                competitorid = (data != null) ? data.competitorid: -1,
-                                competitorprice = (data != null) ? data.competitorprice:-1,
-                                competitorname = (data != null) ? data.competitorname:"No data"
-                            };
+        //        var products =
+        //             pricecompContext.Stateassignment
+        //                .Join(
+        //                    pricecompContext.Product,
+        //                    category => category.Category,
+        //                    product => product.Category,
+        //                    (category, product) => new
+        //                    {
+        //                        id = category.Id,
+        //                        productid = product.Productid,
+        //                        productcode = product.Productcode,
+        //                        productname = product.Productname,
+        //                        salesprice = product.Salesprice,
+        //                        costprice = product.Costprice,
+        //                        keywords = product.Keywords
+        //                    }
+        //                )
+        //                .Where(item => categoryType.Contains(item.id)).ToList();
 
-//                        foreach (var item in datatable)
-//                        {
-//                            Console.WriteLine(item);
-//                        }
+        //        var competitorprice =
+        //            pricecompContext.Competitorprice
+        //                .Where(item => competitorsType.Contains(item.Competitorid))
+        //                .Join(
+        //                    pricecompContext.Competitor1,
+        //                    price => price.Competitorid,
+        //                    competitor => competitor.Competitorid,
+        //                    (price, competitor) => new
+        //                    {
+        //                        id = price.Productid,
+        //                        productid = price.Productid,
+        //                        competitorid = price.Competitorid,
+        //                        competitorprice = price.Competitorprice1,
+        //                        competitorname = competitor.Name
+        //                    }
+        //                ).ToList();
 
-                        var productWithCompetitorPrice = datatable.GroupBy(item => item.productid);
-//
-//                        foreach (var item in productWithCompetitorPrice)
-//                        {
-//                            Console.WriteLine(item);
-//                        }
-                        RepeatedField<Msyrpc.Product> productComparison = new RepeatedField<Msyrpc.Product>();
-        
-                        foreach (var productWithCompetitorPriceList in productWithCompetitorPrice)
+
+        //        var datatable = from productItem in products
+        //                        join competitorItem in competitorprice
+        //                on productItem.productid equals competitorItem.productid into productCompetitor
+        //                        from data in productCompetitor.DefaultIfEmpty()
+        //                        select new
+        //                        {
+        //                            productItem.productid,
+        //                            productItem.productcode,
+        //                            productItem.productname,
+        //                            productItem.salesprice,
+        //                            productItem.costprice,
+        //                            productItem.keywords,
+        //                            competitorid = (data != null) ? data.competitorid : -1,
+        //                            competitorprice = (data != null) ? data.competitorprice : -1,
+        //                            competitorname = (data != null) ? data.competitorname : "No data"
+        //                        };
+
+
+        //        var productWithCompetitorPrice = datatable.GroupBy(item => item.productid);
+
+        //        RepeatedField<Msyrpc.Product> productComparison = new RepeatedField<Msyrpc.Product>();
+
+        //        foreach (var productWithCompetitorPriceList in productWithCompetitorPrice)
+        //        {
+
+        //            RepeatedField<CompetitorPrice> competitorPrices = new RepeatedField<CompetitorPrice>();
+
+        //            int id = 0;
+        //            string productCode = "";
+        //            string productDescription = "";
+        //            string keywords = "";
+        //            double costPrice = 0;
+        //            double salesPrice = 0;
+
+        //            foreach (var productWithCompetitorPriceItem in productWithCompetitorPriceList)
+        //            {
+        //                id = productWithCompetitorPriceItem.productid;
+        //                productCode = productWithCompetitorPriceItem.productcode;
+        //                productDescription = productWithCompetitorPriceItem.productname;
+        //                keywords = productWithCompetitorPriceItem.keywords;
+        //                costPrice = (double)productWithCompetitorPriceItem.costprice;
+        //                salesPrice = (double)productWithCompetitorPriceItem.salesprice;
+
+
+        //                competitorPrices.Add(new CompetitorPrice()
+        //                {
+        //                    Name = productWithCompetitorPriceItem.competitorname,
+        //                    Price = (double)productWithCompetitorPriceItem.competitorprice
+        //                });
+        //            }
+
+        //            Product productItem = new Product()
+        //            {
+        //                Id = id,
+        //                ProductCode = productCode,
+        //                ProductDescription = productDescription,
+        //                Keywords = keywords,
+        //                CostPrice = costPrice,
+        //                SalesPrice = salesPrice,
+        //                CompetitorPrices = { competitorPrices }
+        //            };
+
+        //            productComparison.Add(productItem);
+        //        }
+
+        //        ProductComparisonResponse response = new ProductComparisonResponse()
+        //        {
+        //            ProductComparison = { productComparison }
+        //        };
+
+        //        stopwatch.Stop();
+        //        TimeSpan ts = stopwatch.Elapsed;
+        //        // Format and display the TimeSpan value.
+        //        string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+        //            ts.Hours, ts.Minutes, ts.Seconds,
+        //            ts.Milliseconds / 10);
+        //        Console.WriteLine("RunTime " + elapsedTime);
+
+        //        return Task.FromResult(response);
+        //    }
+        //}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// 
+
+        public override  Task<ProductComparisonResponse> GetLoadProductComparisonInfomation(
+            GetProductComparisonRequest request, ServerCallContext context)
+        {
+            ProductComparisonResponse response;
+
+            using (var pricecompContext = new pricecompContext())
+            {
+                Console.WriteLine("start");
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                RepeatedField<Msyrpc.Product> productComparison = new RepeatedField<Msyrpc.Product>();
+
+                var categoryType = request.CategoryTypes;
+                var competitorsType = request.CompetitorsTypes;
+
+                try { 
+                    var selectedCategories = pricecompContext.Stateassignment
+                            .Where(item => categoryType.Contains(item.Id))
+                            .Select(item => item.Category)
+                            .Distinct()
+                            .ToList();
+
+                    var products = pricecompContext.Product
+                        .Where(item => selectedCategories.Contains(item.Category))
+                        .Select(product => new
                         {
-        
-                            RepeatedField<CompetitorPrice> competitorPrices = new RepeatedField<CompetitorPrice>();
-        
-                            int id = 0;
-                            string productCode = "";
-                            string productDescription = "";
-                            string keywords = "";
-                            double costPrice = 0;
-                            double salesPrice = 0;
-        
-                            foreach (var productWithCompetitorPriceItem in productWithCompetitorPriceList)
-                            {
-                                id = productWithCompetitorPriceItem.productid;
-                                productCode = productWithCompetitorPriceItem.productcode;
-                                productDescription = productWithCompetitorPriceItem.productname;
-                                keywords = productWithCompetitorPriceItem.keywords;
-                                costPrice = (double) productWithCompetitorPriceItem.costprice;
-                                salesPrice = (double) productWithCompetitorPriceItem.salesprice;
-        
-        
-                                competitorPrices.Add(new CompetitorPrice()
+                            productid = product.Productid,
+                            productcode = product.Productcode,
+                            productname = product.Productname,
+                            salesprice = product.Salesprice,
+                            costprice = product.Costprice,
+                            keywords = product.Keywords
+                        }).ToList();
+
+                    var competitorprice =
+                        pricecompContext.Competitorprice
+                            .Where(item => competitorsType.Contains(item.Competitorid))
+                            .Join(
+                                pricecompContext.Competitor1,
+                                price => price.Competitorid,
+                                competitor => competitor.Competitorid,
+                                (price, competitor) => new
                                 {
-                                    Name = productWithCompetitorPriceItem.competitorname,
-                                    Price = (double) productWithCompetitorPriceItem.competitorprice
-                                });
-                            }
-        
-                            Product productItem = new Product()
-                            {
-                                Id = id,
-                                ProductCode = productCode,
-                                ProductDescription = productDescription,
-                                Keywords = keywords,
-                                CostPrice = costPrice,
-                                SalesPrice = salesPrice,
-                                CompetitorPrices = {competitorPrices}
-                            };
-        
-                            productComparison.Add(productItem);
-                        }
-        
-                        ProductComparisonResponse response = new ProductComparisonResponse()
+                                    productid = price.Productid,
+                                    competitorprice = price.Competitorprice1,
+                                    competitorname = competitor.Name
+                                }
+                            ).OrderBy(item => item.productid).ToLookup(item => item.productid);
+
+
+
+                    RepeatedField<CompetitorPrice> emptyCompetitorPrices = new RepeatedField<CompetitorPrice>();
+
+                    CompetitorPrice empty = new CompetitorPrice()
+                    {
+                        Name = " No data",
+                        Price = -1
+                    };
+
+
+
+                    Dictionary<int, RepeatedField<CompetitorPrice>> competitorpricetable = new Dictionary<int, RepeatedField<CompetitorPrice>>();
+
+
+                    foreach (var prices in competitorprice)
+                    {
+                        RepeatedField<CompetitorPrice> competitorPrices = new RepeatedField<CompetitorPrice>();
+
+                        foreach (var price in prices)
                         {
-                            ProductComparison = {productComparison}
-                        };
-        
-                        Console.WriteLine(response);
-        
-                        return Task.FromResult(response);
+                            CompetitorPrice p = new CompetitorPrice
+                            {
+                                Name = price.competitorname,
+                                Price = (double)price.competitorprice
+                            };
+                            competitorPrices.Add(p);
+                        }
+
+                        competitorpricetable.Add(prices.Key, competitorPrices);
                     }
+
+                   
+
+
+                    foreach (var product in products)
+                    {
+                        if (competitorpricetable.ContainsKey(product.productid))
+                        {
+                            productComparison.Add(new Product
+                            {
+                                Id = product.productid,
+                                ProductCode = product.productcode,
+                                ProductDescription = product.productname,
+                                Keywords = product.keywords,
+                                CostPrice = (double)product.costprice,
+                                SalesPrice = (double)product.salesprice,
+                                CompetitorPrices = { competitorpricetable[product.productid] }
+                            });
+                        }
+                        else
+                        {
+                            productComparison.Add(new Product
+                            {
+                                Id = product.productid,
+                                ProductCode = product.productcode,
+                                ProductDescription = product.productname,
+                                Keywords = product.keywords,
+                                CostPrice = (double)product.costprice,
+                                SalesPrice = (double)product.salesprice,
+                                CompetitorPrices = { empty }
+                            });
+                        }
+                    };
+
+
                 }
-//        public override Task<ProductComparisonResponse> GetLoadProductComparisonInfomation(
-//            GetProductComparisonRequest request, ServerCallContext context)
-//        {
-//            using (var pricecompContext = new pricecompContext())
-//            {
-//                var categoryType = request.CategoryTypes;
-//                var competitorsType = request.CompetitorsTypes;
-//
-//                var response = new ProductComparisonResponse();
-//
-//                var filteredProduct = 
-//                    from product in pricecompContext.Product
-//                    join statecategory in pricecompContext.Stateassignment on product.Category equals statecategory
-//                        .Category into productWithCategory
-//                    from pc in productWithCategory.DefaultIfEmpty()
-//                    where categoryType.Contains(pc.Id)
-//                    select new
-//                    {
-//                        productid = product.Productid,
-//                        productcode = product.Productcode,
-//                        productname = product.Productname,
-//                        salesprice = product.Salesprice,
-//                        costprice = product.Costprice,
-//                        keywords = product.Keywords,
-//                    };
-////                foreach (var data in filteredProduct)
-////                    {
-////                        Console.WriteLine(data);
-////                    }
-//
-//                var filteredCompetitorPrice =
-//                from competitorprice in pricecompContext.Competitorprice
-//                where competitorsType.Contains(competitorprice.Competitorid)
-//                join competitor in pricecompContext.Competitor1 on competitorprice.Competitorid equals competitor
-//                    .Competitorid
-//                select new
-//                {
-//                    productid = competitorprice.Productid,
-//                    competitorid = competitorprice.Competitorid,
-//                    competitorprice = competitorprice.Competitorprice1,
-//                    productname = competitorprice.Productname,
-//                    competitorname = competitor.Name,
-//                };
-//
-////                foreach (var data in filteredCompetitorPrice)
-////                {
-////                    Console.WriteLine(data);
-////                }
-//
-//                var productWithCompetitorPrice =
-//                    from product in filteredProduct
-//                    join competitor in filteredCompetitorPrice on product.productid equals competitor.productid into
-//                        productWithCompetitorPriceTable
-//                    from subdata in productWithCompetitorPriceTable.DefaultIfEmpty()
-//                    select new
-//                    {
-//                        productid = product.productid,
-//                        productcode = product.productcode,
-//                        productname = product.productname,
-//                        salesprice = product.salesprice,
-//                        costprice = product.costprice,
-//                        keywords = product.keywords,
-//                        competitorid = subdata.competitorid,
-//                        competitorprice = subdata.competitorprice,
-//                        competitorname = subdata.competitorname
-//                    };
-//
-////                var productCompetitorData = productWithCompetitorPrice.GroupBy(item => item.productid).Select(item => item).ToList();
-//                Console.WriteLine(productWithCompetitorPrice);
-//                foreach (var data in productWithCompetitorPrice)
-//                {
-//                    Console.WriteLine(data);
-//                }
-//                Console.ReadKey();
-//
-//                return Task.FromResult(response);
-//
-//            }
-//        }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
+                response = new ProductComparisonResponse()
+                {
+                    ProductComparison = { productComparison.Distinct() }
+                    //ProductComparison = { }
+                };
+
+                stopwatch.Stop();
+                TimeSpan ts = stopwatch.Elapsed;
+                // Format and display the TimeSpan value.
+                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                    ts.Hours, ts.Minutes, ts.Seconds,
+                    ts.Milliseconds / 10);
+                Console.WriteLine("RunTime " + elapsedTime);
+            }
+            return Task.FromResult(response);
+        }
 
         public override Task<UpdateProductDescriptionResponse> UpdateProductDescription(UpdateProductDescriptionRequest request, ServerCallContext context)
         {
+            UpdateProductDescriptionResponse response;
             using (var priceContext = new pricecompContext())
             {
-                UpdateProductDescriptionResponse response;
 
                 var productCode = request.ProductCode;
                 var updatedKeyWord = request.UpdatedDescription;
@@ -446,30 +506,29 @@ namespace server.Services
                             Status = "error"
                         };
                     }
-
-                    return Task.FromResult(response);
                 }
                 else
                 {
-                    return Task.FromResult(new UpdateProductDescriptionResponse()
+                    response = new UpdateProductDescriptionResponse()
                         {
                             Status = "error"
                         }
-                    );
+                    ;
                 }
             }
+            return Task.FromResult(response);
         }
 
         public override Task<UpdateCompetitorTierResponse> UpdateCompetitorTier(UpdateCompetitorTierRequest request, ServerCallContext context)
         {
+            UpdateCompetitorTierResponse response;
             using (var priceContext = new pricecompContext())
             {
-                UpdateCompetitorTierResponse response;
+               
 
                 var updatedCompetitors = request.UpdatedCompetitor;
                 List<Int32> updatedRecord = new List<Int32>();
 
-                Console.WriteLine("updatedCompetitors"+ updatedCompetitors);
                 try
                 {
                     foreach (var competitor in updatedCompetitors)
@@ -492,17 +551,10 @@ namespace server.Services
                             updatedRecord.Add(0);
                         }
                     }
-
-                    foreach (var record in updatedRecord)
-                    {
-                        Console.WriteLine("record"+record);
-                    }
-                    
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    return Task.FromResult(new UpdateCompetitorTierResponse()
+                    response = (new UpdateCompetitorTierResponse()
                     {
                         Status = "update tier fail"
                     });
@@ -510,33 +562,33 @@ namespace server.Services
                
                 if (updatedRecord.Contains(0))
                 {
-                    return Task.FromResult(new UpdateCompetitorTierResponse()
+                    response = (new UpdateCompetitorTierResponse()
                     {
                         Status = "update tier fail"
                     });
                 }
                 else
                 {
-                    return Task.FromResult(new UpdateCompetitorTierResponse()
+                    response = (new UpdateCompetitorTierResponse()
                     {
                         Status = "update tier success"
                     });
                 }
             }
+            return Task.FromResult(response);
         }
 
         public override Task<DeleteCompetitorResponse> DeleteCompetitor(DeleteCompetitorRequest request, ServerCallContext context)
         {
+            DeleteCompetitorResponse response;
             using (var priceContext = new pricecompContext())
             {
-                DeleteCompetitorResponse response;
+               
                 var competitorid = request.CompetitorId;
 
                 var record = priceContext.Competitor1.SingleOrDefault(item => item.Competitorid == competitorid);
 
                 var status = false;
-
-                Console.WriteLine("record.Competitorid", request.CompetitorId);
 
                 if (record != null)
                 {
@@ -572,26 +624,23 @@ namespace server.Services
                         Status = "fail to delete"
                     };
                 }
-
-                return Task.FromResult(response);
             }
+            return Task.FromResult(response);
         }
 
         public override Task<AddCompetitorResponse> AddCompetitor(AddCompetitorRequest request,
             ServerCallContext context)
         {
+            AddCompetitorResponse response;
             using (var priceContext = new pricecompContext())
             {
                 var competitorName = request.Name;
                 var competitorTier = request.Tier;
-                AddCompetitorResponse response;
+                
 
                 var competitors = priceContext.Competitor1;
 
                 var index = competitors.OrderByDescending(item => item.Competitorid).FirstOrDefault().Competitorid + 1;
-                
-
-                Console.WriteLine(index);
 
                 var status = false;
 
@@ -605,7 +654,6 @@ namespace server.Services
                     Website = null
                 };
 
-//                Console.WriteLine(competitor);
                 try
                 {
                     competitors.Add(competitor);
@@ -613,12 +661,10 @@ namespace server.Services
                     
                     if (res != 0)
                     {
-                        Console.WriteLine("restrue" + res);
                         status = true;
                     }
                     else
                     {
-                        Console.WriteLine("restruefalse" + res);
                         status = false;
                     }
                    
@@ -626,7 +672,6 @@ namespace server.Services
                 catch(Exception e)
                 {
                     status = false;
-                    Console.WriteLine(e);
                 }
 
                 if (status)
@@ -643,9 +688,8 @@ namespace server.Services
                         Status = "fail to add new competitor"
                     };
                 }
-
-                return Task.FromResult(response);
             }
+            return Task.FromResult(response);
         }
 
 
@@ -653,6 +697,7 @@ namespace server.Services
         public override Task<AllStateCategoryTypesResponse> GetAllStateProductCategories(
             AllStateCategoryTypesRequest request, ServerCallContext context)
         {
+            AllStateCategoryTypesResponse response;
             using (var priceContext = new pricecompContext())
             {
                 //                var categories = priceContext.Stateassignment.ToList();
@@ -711,7 +756,7 @@ namespace server.Services
                     }
                 }
 
-                AllStateCategoryTypesResponse response = new AllStateCategoryTypesResponse()
+                response = new AllStateCategoryTypesResponse()
                 {
                     CategoryDaily = { categoryDaily },
                     CategoryMondayAndThursday = { categoryMondayAndThursday },
@@ -719,24 +764,19 @@ namespace server.Services
                     CategoryWednesdayAndSaturday = { categoryWednesdayAndSaturday },
                     CategoryUnassigned = { categoryUnassigned }
                 };
-
-                Console.WriteLine(response);
-
-                return Task.FromResult(response);
             }
+            return Task.FromResult(response);
         }
 
         public override Task<UpdateCategoryStateResponse> UpdateCategoryState(UpdateCategoryStateRequest request,
             ServerCallContext context)
         {
+            UpdateCategoryStateResponse response;
             using (var priceContext = new pricecompContext())
             {
-                UpdateCategoryStateResponse response;
-
                 var updatedCatogories = request.UpdatedCategories;
                 List<Int32> updatedRecord = new List<Int32>();
 
-                Console.WriteLine("updatedCompetitors" + updatedCatogories);
                 try
                 {
                     foreach (var category in updatedCatogories)
@@ -760,16 +800,10 @@ namespace server.Services
                         }
                     }
 
-                    foreach (var record in updatedRecord)
-                    {
-                        Console.WriteLine("record" + record);
-                    }
-
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    return Task.FromResult(new UpdateCategoryStateResponse()
+                    response = (new UpdateCategoryStateResponse()
                     {
                         Status = "update state fail"
                     });
@@ -777,24 +811,26 @@ namespace server.Services
 
                 if (updatedRecord.Contains(0))
                 {
-                    return Task.FromResult(new UpdateCategoryStateResponse()
+                    response = (new UpdateCategoryStateResponse()
                     {
                         Status = "update state fail"
                     });
                 }
                 else
                 {
-                    return Task.FromResult(new UpdateCategoryStateResponse()
+                    response = (new UpdateCategoryStateResponse()
                     {
                         Status = "update state success"
                     });
                 }
             }
+            return Task.FromResult(response);
         }
 
         public override Task<GetCategoryMarginResponse> GetCategoryMargin(GetCategoryMarginRequest reqeust,
             ServerCallContext context)
         {
+            GetCategoryMarginResponse response;
             using (var priceContext = new pricecompContext())
             {
                 
@@ -831,25 +867,21 @@ namespace server.Services
                     categoryMargin.Add(categoryMarginItem);
                 }
 
-                var reponse = new GetCategoryMarginResponse()
+                response = new GetCategoryMarginResponse()
                 {
                     CategoryMargins = { categoryMargin }
                 };
-
-                return Task.FromResult(reponse);
             }
+            return Task.FromResult(response);
         }
 
         public override Task<AddCategoryMarginResponse> AddCategoryMargin(AddCategoryMarginRequest request,
             ServerCallContext conetxt)
         {
+            AddCategoryMarginResponse response;
             using (var priceContext = new pricecompContext())
             {
                 var categorymargin = priceContext.Categorymargin;
-                AddCategoryMarginResponse response;
-
-//                var index = categorymargin.OrderByDescending(item => item.Id).FirstOrDefault().Id + 1;
-                Console.WriteLine("request", request);
                 var margin = Double.Parse(request.Margin.ToString("0.##"));
                 var addedCategoryMargin = new Categorymargin()
                 {
@@ -887,7 +919,6 @@ namespace server.Services
                     {
                         Status = "add successful"
                     };
-                    return Task.FromResult(response);
                 }
                 else
                 {
@@ -895,18 +926,17 @@ namespace server.Services
                     {
                         Status = "fail to add new rule"
                     };
-                    return Task.FromResult(response);
                 }
             }
+            return Task.FromResult(response);
         }
 
         public override Task<DeleteCategoryMarginResponse> DeleteCategoryMargin(DeleteCategoryMarginRequest request,
             ServerCallContext context)
         {
+            DeleteCategoryMarginResponse response;
             using (var priceContext = new pricecompContext())
             {
-
-                DeleteCategoryMarginResponse response;
                 var index = request.Id;
                 var record = priceContext.Categorymargin.FirstOrDefault(item => item.Id == index);
 
@@ -941,8 +971,8 @@ namespace server.Services
                     };
                 }
 
-                return Task.FromResult(response);
             }
+            return Task.FromResult(response);
         }
     }
 }

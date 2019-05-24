@@ -227,13 +227,11 @@ export default class DisplayData extends Vue {
                 margin:this.inputRule
                 })
             Object.assign(this.rows[this.editIndex],selectedItem)
-            console.log("this.rows[this.editIndex]",this.rows[this.editIndex])
 
             this.AddCategoryMargin(selectedItem)
         }
 
         getCurrentMaxIndex(){
-            console.log("cuurent index",this.marginCategories)
             let indexList:any[] = [];
             if(this.marginCategories){
                 for(let [key,value] of Object.entries(this.marginCategories)){
@@ -269,7 +267,7 @@ export default class DisplayData extends Vue {
                     onEnd: res => {
                         const { message, status } = res;
                         if( status === grpc.Code.OK && message){
-                            console.log(message.toObject());
+                            console.log("add margin");
                             this.editMarginDialog = false;
                         }
                     }, 
@@ -296,7 +294,7 @@ export default class DisplayData extends Vue {
                     onEnd: res => {
                         const { message, status } = res;
                         if( status === grpc.Code.OK && message){
-                            console.log( message.toObject())
+                            console.log("delete margin")
                             this.deleteRule(marginItem);
                         }
                     }

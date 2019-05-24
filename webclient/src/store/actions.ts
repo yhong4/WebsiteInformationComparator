@@ -2,6 +2,9 @@ import stateType from './type'
 import { ActionTree } from 'vuex'
 import {grpc} from "@improbable-eng/grpc-web";
 
+import isEmpty from 'lodash'
+import _ from 'lodash'
+
 import { PriceComparisonService } from '../typings/pricecomparison_pb_service';
 import { GetAllCompetitorTypesRequest, 
          GetAllCategoryTypesRequest, 
@@ -12,11 +15,11 @@ import { GetAllCompetitorTypesRequest,
     } from '../typings/pricecomparison_pb';
 
  
-const host:string = "http://localhost:8080";
+const host:string = "http://10.0.0.247:8000";
 
 const actions: ActionTree<any, any> = {
     initData({dispatch}){
-        dispatch('getCategories')
+        // dispatch('getCategories')
         dispatch('getCompetitors')
         dispatch('getStateCategories')
         dispatch('getCategoryMargin')
@@ -101,6 +104,7 @@ const actions: ActionTree<any, any> = {
     },
 
     getCompetitors({commit,state}){
+        console.log(host);
         let request = new GetAllCompetitorTypesRequest();
         try{
           grpc.unary(PriceComparisonService.GetAllCompetitors,{
@@ -121,6 +125,8 @@ const actions: ActionTree<any, any> = {
 
     getProductComparison({commit,state}, request:{categoryTypes:number[],competitorsTypes:number[]}){
       state.isTableDataLoading = false;
+      state.isFailLoadTable = false;
+      
       let queryRequest = new GetProductComparisonRequest()
       queryRequest.setCategorytypesList(request.categoryTypes)
       queryRequest.setCompetitorstypesList(request.competitorsTypes)
@@ -132,11 +138,15 @@ const actions: ActionTree<any, any> = {
             const { status,message } = res;
             if(status ==grpc.Code.OK && message){
               console.log("resp,",message.toObject())
-              commit(stateType.SET_PRODUCTCOMPARISON, message.toObject());
-              state.isTableDataLoading = true;
+              if(!_.isEmpty(message.toObject())){
+                commit(stateType.SET_PRODUCTCOMPARISON, message.toObject());
+                state.isTableDataLoading = true;
+              }else{
+                commit(stateType.SET_PRODUCTCOMPARISON, {});
+                state.isTableDataLoading = true;
+              }
             }else{
-              commit(stateType.SET_PRODUCTCOMPARISON, {});
-              state.isTableDataLoading = true;
+              state.isFailLoadTable = true
             }
           }
         })
