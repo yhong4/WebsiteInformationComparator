@@ -54,13 +54,13 @@ Database configuration can be changed in .yml
 
 Pull the docker from repository
 ```
-docker pull registry.msy.com.au:5000/pricecomparisonserver
+docker pull YOUR.DOCKER.REGISTRY:5000/pricecomparisonserver
 ```
 ```
-docker pull registry.msy.com.au:5000/pricecomparisonclient
+docker pull YOUR.DOCKER.REGISTRY:5000/pricecomparisonclient
 ```
 ```
-docker pull registry.msy.com.au:5000/pricecomparisonproxy
+docker pull YOUR.DOCKER.REGISTRY:5000/pricecomparisonproxy
 ```
 ```
 docker stack deploy --compose-file docker-compose.deploy.yml pricecomp 
