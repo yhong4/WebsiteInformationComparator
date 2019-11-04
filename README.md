@@ -1,3 +1,9 @@
+*Description
+The project provide complete product for compare the hardware prices between different hardware companies. 
+Front-end: VueJS
+API: GRPC
+Back-end: ASP.NET CORE
+
 *Deploy to localhost
 **change client api url
 /src/store/actions.ts
