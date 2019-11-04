@@ -40,10 +40,10 @@ scp docker-compose.deploy.yml host@address:/PATH
 Database configuration can be changed in .yml 
 ```
     environment:
-      - DATABASE_HOST=192.168.100.8
+      - DATABASE_HOST=YOURHOST
       - DATABASE_NAME=pricecomp
-      - DATABASE_USERNAME=neo
-      - DATABASE_PASSWORD=Msy1234!
+      - DATABASE_USERNAME=YOURUSRNAME
+      - DATABASE_PASSWORD=YOURPASSWORD
 ```
 
 Pull the docker from repository
