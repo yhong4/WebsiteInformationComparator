@@ -1,5 +1,5 @@
 *Description
-The project provide complete product for compare the hardware prices between different hardware companies. 
+The project is practical project providing a solution that implmenting GRPC with VueJS and C#. 
 Front-end: VueJS
 API: GRPC
 Back-end: ASP.NET CORE
