@@ -8,7 +8,7 @@ Back-end: ASP.NET CORE
 **change client api url
 /src/store/actions.ts
 ```
-const host:string = "http://10.0.0.247:8000"; => const host:string = "http://localhost:8000";
+const host:string = "http://YOUR_IP_ADDRESS:8000"; => const host:string = "http://localhost:8000";
 ```
 /src/store/state.ts
 ```
@@ -47,26 +47,26 @@ Database configuration can be changed in .yml
 ```
     environment:
       - DATABASE_HOST=YOURHOST
-      - DATABASE_NAME=pricecomp
+      - DATABASE_NAME=comp
       - DATABASE_USERNAME=YOURUSRNAME
       - DATABASE_PASSWORD=YOURPASSWORD
 ```
 
 Pull the docker from repository
 ```
-docker pull YOUR.DOCKER.REGISTRY:5000/pricecomparisonserver
+docker pull YOUR.DOCKER.REGISTRY:PORT/webserver
 ```
 ```
-docker pull YOUR.DOCKER.REGISTRY:5000/pricecomparisonclient
+docker pull YOUR.DOCKER.REGISTRY:PORT/webclient
 ```
 ```
-docker pull YOUR.DOCKER.REGISTRY:5000/pricecomparisonproxy
+docker pull YOUR.DOCKER.REGISTRY:PORT/webproxy
 ```
 ```
-docker stack deploy --compose-file docker-compose.deploy.yml pricecomp 
+docker stack deploy --compose-file docker-compose.deploy.yml comp 
 ```
 
 In browser
 ```
-http://10.0.0.247:8080
+http://YOUR_IP_ADDRESS:8080
 ```
