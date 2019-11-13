@@ -1,5 +1,5 @@
 *Description
-The project is practical project providing a solution that implmenting GRPC with VueJS and C#. 
+The project is demo project providing a solution that implmenting GRPC with VueJS and C#. 
 Front-end: VueJS
 API: GRPC
 Back-end: ASP.NET CORE
