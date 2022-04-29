@@ -14,7 +14,7 @@
     "@improbable-eng/grpc-web": "^0.9.1",
     "@types/google-protobuf": "^3.2.7",
     "@types/lodash": "^4.14.130",
-    "async": "^2.6.2",
+    "async": "^2.6.4",
     "core-js": "^2.6.5",
     "epic-spinners": "^1.1.0",
     "google-protobuf": "^3.7.1",
